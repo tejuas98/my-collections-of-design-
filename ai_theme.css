@@ -1,0 +1,127 @@
+:root {
+    --background: #fdfcf8;
+    --foreground: #000000;
+    --accent: #000000;
+    --dull-foreground: #6b7280;
+}
+
+body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: Charter, 'Bitstream Charter', 'Sitka Text', Cambria, Georgia, serif;
+    font-size: 21px;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, .font-system-serif {
+    font-family: inherit;
+    font-weight: normal;
+}
+
+.section-title { 
+    font-size: 3.5rem !important; 
+    margin-top: 3rem !important; 
+    margin-bottom: 2rem !important; 
+    color: #000000 !important; 
+    font-family: inherit !important;
+    font-weight: normal !important;
+}
+
+.prose h1 { font-size: 2.5rem !important; font-weight: bold !important; margin-top: 2rem !important; margin-bottom: 1rem !important; }
+.prose h2 { font-size: 2rem !important; margin-top: 2rem !important; margin-bottom: 1rem !important; color: #000000 !important; }
+.prose h3 { font-size: 1.5rem !important; margin-top: 1.5rem !important; margin-bottom: 1rem !important; color: #000000 !important; }
+
+.main-grid {
+    padding: 0 1rem;
+    width: 100%;
+}
+
+@media (min-width: 1024px) {
+    .main-grid {
+        padding: 0 1rem;
+    }
+}
+
+.section-nav {
+    position: sticky;
+    top: 2rem;
+}
+
+.toc-link {
+    display: block;
+    color: var(--dull-foreground);
+    text-decoration: none;
+    margin-bottom: 0.75rem;
+    font-size: 0.95rem;
+    transition: color 0.2s;
+}
+
+.toc-link:hover, .toc-link.active {
+    color: var(--foreground);
+    font-weight: 600;
+}
+
+a {
+    color: var(--foreground);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 1px;
+}
+
+a.no-underline {
+    text-decoration: none;
+}
+
+.tab-box {
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    padding: 0.25rem 0.5rem;
+    background: transparent;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.2s;
+}
+
+.tab-box:hover {
+    background: #f3f4f6;
+}
+
+/* Document specific styling */
+.prose p {
+    margin-bottom: 1.5rem;
+    font-size: inherit;
+    color: inherit;
+}
+
+details {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    background: #f9fafb;
+}
+
+summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--foreground);
+}
+
+
+/* Smooth Scrolling and Hidden Scrollbars */
+html {
+    
+}
+
+body {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+body::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+}
+

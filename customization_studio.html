@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en" class="light-theme">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customization Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@300;400;500;600&family=Space+Mono&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Inter"', 'sans-serif'],
+                        mono: ['"Space Mono"', 'monospace'],
+                        serif: ['"Playfair Display"', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --bg-primary: #f9fafb;
+            --text-primary: #111827;
+            --border-primary: #e5e7eb;
+        }
+        body { background-color: #111827; color: #f9fafb; min-height: 100vh; overflow-x: hidden; }
+        
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* The custom resize handles injected around selected element */
+        .resize-handle {
+            position: absolute;
+            background: #4f46e5;
+            z-index: 100;
+            pointer-events: auto; /* CRITICAL FIX: allow clicking handles */
+        }
+        .resize-handle.top { top: -4px; left: 50%; transform: translateX(-50%); width: 24px; height: 8px; cursor: ns-resize; border-radius: 4px; }
+        .resize-handle.bottom { bottom: -4px; left: 50%; transform: translateX(-50%); width: 24px; height: 8px; cursor: ns-resize; border-radius: 4px; }
+        .resize-handle.left { left: -4px; top: 50%; transform: translateY(-50%); width: 8px; height: 24px; cursor: ew-resize; border-radius: 4px; }
+        .resize-handle.right { right: -4px; top: 50%; transform: translateY(-50%); width: 8px; height: 24px; cursor: ew-resize; border-radius: 4px; }
+
+        .move-handle {
+            position: absolute;
+            top: -24px;
+            left: -2px;
+            background: #4f46e5;
+            color: white;
+            padding: 2px;
+            border-radius: 4px;
+            cursor: grab;
+            pointer-events: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .move-handle:active {
+            cursor: grabbing;
+        }
+
+        /* The bounding box */
+        .resizer-bounding-box {
+            position: absolute;
+            pointer-events: none; /* let clicks pass through to element, but keep handles active */
+            border: 2px solid #4f46e5;
+            z-index: 99;
+            display: none;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased flex flex-col h-screen">
+
+    <!-- Header Controls -->
+    <div class="flex justify-between items-center p-6 text-white w-full border-b border-gray-800 bg-[#0d1117] z-50">
+        <div>
+            <h2 class="font-serif text-2xl font-bold tracking-tight">Customization Studio</h2>
+            <p class="font-mono text-[10px] text-gray-400 mt-1 uppercase tracking-widest flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-green-500 inline-block animate-pulse"></span> Editing Mode Active
+            </p>
+        </div>
+        <div class="flex gap-4">
+            <button onclick="cancelAndReturn()" class="px-6 py-2 rounded-full border border-gray-700 text-gray-300 font-mono text-xs font-bold tracking-widest hover:bg-gray-800 transition">CANCEL</button>
+            <button onclick="saveAndReturn()" class="px-6 py-2 rounded-full bg-indigo-600 text-white font-mono text-xs font-bold tracking-widest shadow-lg shadow-indigo-500/20 hover:bg-indigo-500 transition">SAVE TO CARD</button>
+        </div>
+    </div>
+    
+    <!-- Workspace -->
+    <div class="flex-1 flex w-full h-full relative overflow-hidden bg-gray-900" id="workspace" onclick="deselectElement(event)">
+        
+        <!-- Canvas -->
+        <div class="flex-1 flex justify-center items-center overflow-auto hide-scroll p-12">
+            <div id="editor-canvas" class="relative bg-white shadow-2xl rounded-xl border border-gray-800 overflow-hidden text-black transition-all">
+                <!-- Visual HTML is injected here by JS -->
+            </div>
+        </div>
+        
+        <!-- RIGHT SIDEBAR (Properties Panel) -->
+        <div id="properties-panel" class="w-80 bg-[#1e1e1e] border-l border-gray-800 flex flex-col" onclick="event.stopPropagation()">
+            <div class="p-6 border-b border-gray-800 flex justify-between items-center">
+                <div>
+                    <h3 class="font-sans text-sm font-bold text-gray-200 uppercase tracking-widest">Properties Panel</h3>
+                    <p class="text-xs text-gray-500 mt-1">Select an element to edit</p>
+                </div>
+                <div class="flex gap-2">
+                    <button id="btn-undo" onclick="undo()" class="p-1.5 bg-gray-800 rounded hover:bg-gray-700 transition disabled:opacity-30 disabled:cursor-not-allowed" title="Undo">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>
+                    </button>
+                    <button id="btn-redo" onclick="redo()" class="p-1.5 bg-gray-800 rounded hover:bg-gray-700 transition disabled:opacity-30 disabled:cursor-not-allowed" title="Redo">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"/></svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Default State (No Selection) -->
+            <div id="empty-state" class="flex-1 flex flex-col justify-center items-center p-6 text-center text-gray-500">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mb-4 opacity-50"><path d="m3 3 7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/><path d="m13 13 6 6"/></svg>
+                <p class="text-sm mb-8">Click any component on the canvas to inspect and edit its properties.</p>
+                
+                <div class="w-full border-t border-gray-800 pt-8 flex flex-col gap-3">
+                    <button onclick="addTextBox()" class="w-full py-2.5 bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 rounded text-xs font-bold tracking-widest hover:bg-indigo-600/40 transition flex items-center justify-center gap-2">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                        ADD TEXT BOX
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Tools State (When Selected) -->
+            <div id="tools-state" class="hidden flex-1 overflow-y-auto p-6 flex flex-col gap-8">
+                
+                <!-- Layout / Size -->
+                <div>
+                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3">Layout</div>
+                    <div class="grid grid-cols-2 gap-4 text-xs">
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-gray-400 font-medium">Width</label>
+                            <div class="flex items-center gap-1 bg-gray-800 border border-gray-600 rounded px-2 py-1.5">
+                                <input type="number" id="tool-width" onchange="applyStyle('width', this.value + 'px'); saveState();" oninput="applyStyle('width', this.value + 'px')" class="w-full bg-transparent text-gray-200 outline-none">
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-gray-400 font-medium">Height</label>
+                            <div class="flex items-center gap-1 bg-gray-800 border border-gray-600 rounded px-2 py-1.5">
+                                <input type="number" id="tool-height" onchange="applyStyle('height', this.value + 'px'); saveState();" oninput="applyStyle('height', this.value + 'px')" class="w-full bg-transparent text-gray-200 outline-none">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Typography -->
+                <div class="border-t border-gray-800 pt-6">
+                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3">Typography</div>
+                    <div class="flex flex-col gap-4 text-xs">
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-gray-400 font-medium">Font Family</label>
+                            <select id="tool-font" onchange="applyStyle('fontFamily', this.value); saveState();" class="border border-gray-600 rounded px-2 py-1.5 bg-gray-800 text-gray-200 w-full outline-none focus:border-indigo-500">
+                                <option value="">Original Default</option>
+                                <option value="'Inter', sans-serif">Inter</option>
+                                <option value="'Playfair Display', serif">Playfair Display</option>
+                                <option value="'Space Mono', monospace">Space Mono</option>
+                                <option value="system-ui">System UI</option>
+                            </select>
+                        </div>
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-gray-400 font-medium">Font Size</label>
+                            <div class="flex items-center gap-1 bg-gray-800 border border-gray-600 rounded px-2 py-1.5">
+                                <input type="number" id="tool-size" onchange="applyStyle('fontSize', this.value + 'px'); saveState();" oninput="applyStyle('fontSize', this.value + 'px')" class="w-full bg-transparent text-gray-200 outline-none">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Colors -->
+                <div class="border-t border-gray-800 pt-6">
+                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3">Colors</div>
+                    <div class="flex flex-col gap-4 text-xs">
+                        <div class="flex justify-between items-center bg-gray-800 border border-gray-600 rounded px-3 py-2">
+                            <label class="text-gray-400 font-medium">Text Color</label>
+                            <div class="flex items-center gap-2">
+                                <span id="tool-color-hex" class="font-mono text-gray-500">#000000</span>
+                                <input type="color" id="tool-color" onchange="saveState()" oninput="applyStyle('color', this.value); document.getElementById('tool-color-hex').innerText = this.value.toUpperCase();" class="w-6 h-6 p-0 border-0 rounded bg-transparent cursor-pointer">
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center bg-gray-800 border border-gray-600 rounded px-3 py-2">
+                            <label class="text-gray-400 font-medium">Background</label>
+                            <div class="flex items-center gap-2">
+                                <span id="tool-bg-hex" class="font-mono text-gray-500">#FFFFFF</span>
+                                <input type="color" id="tool-bg" onchange="saveState()" oninput="applyStyle('backgroundColor', this.value); document.getElementById('tool-bg-hex').innerText = this.value.toUpperCase();" class="w-6 h-6 p-0 border-0 rounded bg-transparent cursor-pointer">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-auto flex flex-col gap-3">
+                    <button onclick="deleteSelectedElement()" class="w-full py-2 bg-red-900/30 text-red-400 border border-red-900/50 rounded text-[10px] font-bold tracking-widest hover:bg-red-900/50 transition">
+                        DELETE COMPONENT
+                    </button>
+                    <div class="bg-indigo-500/10 border border-indigo-500/20 rounded p-3 text-[10px] text-indigo-300 leading-tight">
+                        <p class="mb-1"><strong class="font-bold">Text Edit:</strong> Double click the text to start typing.</p>
+                        <p><strong class="font-bold">Resize:</strong> Use the blue handles around the element in the canvas to drag.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- The 4-Sided Resize Bounding Box (Injected globally, snaps to element) -->
+    <div id="resizer-box" class="resizer-bounding-box">
+        <div class="move-handle" onmousedown="startMove(event)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9l-3 3 3 3M9 5l3-3 3 3M9 19l3 3 3-3M19 9l3 3-3 3M2 12h20M12 2v20"/></svg>
+        </div>
+        <div class="resize-handle top" data-dir="n" onmousedown="startResize(event, 'n')"></div>
+        <div class="resize-handle right" data-dir="e" onmousedown="startResize(event, 'e')"></div>
+        <div class="resize-handle bottom" data-dir="s" onmousedown="startResize(event, 's')"></div>
+        <div class="resize-handle left" data-dir="w" onmousedown="startResize(event, 'w')"></div>
+    </div>
+
+    <script>
+        let selectedElement = null;
+        let isResizing = false;
+        
+        // Boot loader
+        window.addEventListener('DOMContentLoaded', () => {
+            const htmlToEdit = localStorage.getItem('editing_visual_html');
+            if (!htmlToEdit) {
+                alert("No visual loaded. Returning to lab.");
+                window.location.href = 'visual_lab.html';
+                return;
+            }
+            
+            const canvas = document.getElementById('editor-canvas');
+            canvas.innerHTML = htmlToEdit;
+            
+            attachListeners();
+            saveState(); // Initial state
+            
+            // Continuous tracking for the resizer box
+            window.addEventListener('scroll', updateResizerBox, true);
+            window.addEventListener('resize', updateResizerBox);
+        });
+
+        function attachListeners() {
+            const canvas = document.getElementById('editor-canvas');
+            const elements = canvas.querySelectorAll('*');
+            elements.forEach(el => {
+                if (el.id === 'editor-canvas') return;
+                el.removeEventListener('click', selectElementHandler);
+                el.removeEventListener('mouseenter', mouseEnterHandler);
+                el.removeEventListener('mouseleave', mouseLeaveHandler);
+
+                el.addEventListener('click', selectElementHandler);
+                el.addEventListener('mouseenter', mouseEnterHandler);
+                el.addEventListener('mouseleave', mouseLeaveHandler);
+            });
+        }
+
+        function selectElementHandler(e) {
+            e.stopPropagation();
+            selectElement(this);
+        }
+
+        function mouseEnterHandler(e) {
+            if(!isResizing && !isMoving) {
+                e.stopPropagation();
+                if(selectedElement !== this) this.style.outline = '1px dashed rgba(99, 102, 241, 0.4)';
+            }
+        }
+
+        function mouseLeaveHandler(e) {
+            if(!isResizing && !isMoving && selectedElement !== this) this.style.outline = '';
+        }
+
+        // --- UNDO REDO MANAGER ---
+        const history = [];
+        let historyIndex = -1;
+
+        function saveState() {
+            const canvas = document.getElementById('editor-canvas');
+            // Temporarily strip edit styles if needed, but innerHTML captures mostly clean state
+            // besides contenteditable if something is selected. That's fine.
+            const currentState = canvas.innerHTML;
+            
+            if (historyIndex >= 0 && history[historyIndex] === currentState) return;
+            
+            if (historyIndex < history.length - 1) {
+                history.splice(historyIndex + 1);
+            }
+            
+            history.push(currentState);
+            historyIndex++;
+            updateUndoRedoButtons();
+        }
+
+        function undo() {
+            if (historyIndex > 0) {
+                historyIndex--;
+                restoreState(history[historyIndex]);
+            }
+        }
+
+        function redo() {
+            if (historyIndex < history.length - 1) {
+                historyIndex++;
+                restoreState(history[historyIndex]);
+            }
+        }
+
+        function restoreState(html) {
+            deselectElement();
+            const canvas = document.getElementById('editor-canvas');
+            canvas.innerHTML = html;
+            attachListeners();
+            updateUndoRedoButtons();
+        }
+
+        function updateUndoRedoButtons() {
+            const undoBtn = document.getElementById('btn-undo');
+            const redoBtn = document.getElementById('btn-redo');
+            if(undoBtn) undoBtn.disabled = historyIndex <= 0;
+            if(redoBtn) redoBtn.disabled = historyIndex >= history.length - 1;
+        }
+
+        // --- SELECTION LOGIC ---
+        function selectElement(el) {
+            if (isResizing) return;
+            
+            // Clean old
+            if (selectedElement && selectedElement !== el) {
+                selectedElement.style.outline = '';
+                selectedElement.removeAttribute('contenteditable');
+            }
+            
+            selectedElement = el;
+            selectedElement.setAttribute('contenteditable', 'true');
+            // Remove outline because we are using the custom resizer box now
+            selectedElement.style.outline = 'none'; 
+            
+            showSidebar(el);
+            updateResizerBox();
+        }
+
+        function deselectElement(e) {
+            if (isResizing || isMoving) return;
+            // Only deselect if clicking raw background
+            if (e && e.target !== document.getElementById('workspace') && e.target !== document.getElementById('editor-canvas')) return; 
+            
+            let didHaveSelection = false;
+            if (selectedElement) {
+                selectedElement.style.outline = '';
+                selectedElement.removeAttribute('contenteditable');
+                selectedElement = null;
+                didHaveSelection = true;
+            }
+            hideSidebar();
+            document.getElementById('resizer-box').style.display = 'none';
+            if(didHaveSelection) saveState();
+        }
+
+        function deleteSelectedElement() {
+            if (selectedElement) {
+                selectedElement.remove();
+                deselectElement();
+            }
+        }
+
+        // --- 4-SIDED RESIZE ENGINE ---
+        function updateResizerBox() {
+            if (!selectedElement) return;
+            const resizer = document.getElementById('resizer-box');
+            const rect = selectedElement.getBoundingClientRect();
+            
+            resizer.style.display = 'block';
+            resizer.style.top = (rect.top + window.scrollY) + 'px';
+            resizer.style.left = (rect.left + window.scrollX) + 'px';
+            resizer.style.width = rect.width + 'px';
+            resizer.style.height = rect.height + 'px';
+            
+            // Update sidebar dimensions
+            const computed = window.getComputedStyle(selectedElement);
+            document.getElementById('tool-width').value = parseInt(computed.width);
+            document.getElementById('tool-height').value = parseInt(computed.height);
+        }
+
+        let resizeDir = '';
+        let startX, startY, startW, startH;
+
+        function startResize(e, dir) {
+            e.stopPropagation();
+            e.preventDefault();
+            isResizing = true;
+            resizeDir = dir;
+            startX = e.clientX;
+            startY = e.clientY;
+            
+            // Force element to respect explicit dimensions over flex/tailwind classes
+            selectedElement.style.flex = 'none';
+            selectedElement.style.maxWidth = 'none';
+            selectedElement.style.maxHeight = 'none';
+            selectedElement.style.boxSizing = 'border-box';
+            
+            const computed = window.getComputedStyle(selectedElement);
+            startW = parseFloat(computed.width);
+            startH = parseFloat(computed.height);
+            
+            document.addEventListener('mousemove', doResize);
+            document.addEventListener('mouseup', stopResize);
+        }
+
+        function doResize(e) {
+            if (!isResizing) return;
+            
+            const deltaX = e.clientX - startX;
+            const deltaY = e.clientY - startY;
+            
+            if (resizeDir === 'e') {
+                selectedElement.style.width = Math.max(10, startW + deltaX) + 'px';
+            } else if (resizeDir === 's') {
+                selectedElement.style.height = Math.max(10, startH + deltaY) + 'px';
+            } else if (resizeDir === 'w') {
+                selectedElement.style.width = Math.max(10, startW - deltaX) + 'px';
+            } else if (resizeDir === 'n') {
+                selectedElement.style.height = Math.max(10, startH - deltaY) + 'px';
+            }
+            
+            updateResizerBox();
+        }
+
+        function stopResize() {
+            isResizing = false;
+            document.removeEventListener('mousemove', doResize);
+            document.removeEventListener('mouseup', stopResize);
+            saveState();
+        }
+
+        // --- MOVE ENGINE ---
+        let isMoving = false;
+        let moveStartX, moveStartY;
+        let elStartLeft, elStartTop;
+
+        function detachToCanvas(el) {
+            const canvas = document.getElementById('editor-canvas');
+            if (el.parentElement === canvas) return; // already detached
+            
+            // Get absolute position relative to canvas
+            const canvasRect = canvas.getBoundingClientRect();
+            const elRect = el.getBoundingClientRect();
+            
+            const newLeft = elRect.left - canvasRect.left + canvas.scrollLeft;
+            const newTop = elRect.top - canvasRect.top + canvas.scrollTop;
+            
+            // Reparent
+            canvas.appendChild(el);
+            
+            // Force absolute positioning
+            el.style.position = 'absolute';
+            el.style.left = newLeft + 'px';
+            el.style.top = newTop + 'px';
+            el.style.margin = '0';
+            el.style.transform = 'none';
+        }
+
+        function startMove(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            isMoving = true;
+            moveStartX = e.clientX;
+            moveStartY = e.clientY;
+            
+            // Reparent to canvas so it breaks out of its parent's layout constraints
+            detachToCanvas(selectedElement);
+            
+            const computed = window.getComputedStyle(selectedElement);
+            elStartLeft = parseFloat(computed.left) || 0;
+            elStartTop = parseFloat(computed.top) || 0;
+            
+            document.addEventListener('mousemove', doMove);
+            document.addEventListener('mouseup', stopMove);
+        }
+
+        function doMove(e) {
+            if (!isMoving) return;
+            const deltaX = e.clientX - moveStartX;
+            const deltaY = e.clientY - moveStartY;
+            
+            selectedElement.style.left = (elStartLeft + deltaX) + 'px';
+            selectedElement.style.top = (elStartTop + deltaY) + 'px';
+            
+            updateResizerBox();
+        }
+
+        function stopMove() {
+            isMoving = false;
+            document.removeEventListener('mousemove', doMove);
+            document.removeEventListener('mouseup', stopMove);
+            saveState();
+        }
+
+        // --- SIDEBAR LOGIC ---
+        function showSidebar(el) {
+            document.getElementById('empty-state').classList.add('hidden');
+            document.getElementById('tools-state').classList.remove('hidden');
+            
+            const computed = window.getComputedStyle(el);
+            document.getElementById('tool-size').value = parseInt(computed.fontSize);
+            
+            const textColor = rgbToHex(computed.color);
+            document.getElementById('tool-color').value = textColor;
+            document.getElementById('tool-color-hex').innerText = textColor.toUpperCase();
+            
+            const bg = computed.backgroundColor;
+            let bgColor = '#ffffff';
+            if (bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') {
+                bgColor = rgbToHex(bg);
+            }
+            document.getElementById('tool-bg').value = bgColor;
+            document.getElementById('tool-bg-hex').innerText = bgColor.toUpperCase();
+            
+            document.getElementById('tool-font').value = computed.fontFamily;
+        }
+        
+        function hideSidebar() {
+            document.getElementById('empty-state').classList.remove('hidden');
+            document.getElementById('tools-state').classList.add('hidden');
+        }
+
+        function applyStyle(property, value) {
+            if (selectedElement) {
+                if (property === 'width' || property === 'height') {
+                    selectedElement.style.flex = 'none';
+                    selectedElement.style.maxWidth = 'none';
+                    selectedElement.style.maxHeight = 'none';
+                }
+                selectedElement.style[property] = value;
+                updateResizerBox();
+            }
+        }
+
+        function rgbToHex(rgb) {
+            const rgbRegex = /^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*[\d.]+)?\)$/;
+            const result = rgbRegex.exec(rgb);
+            if (!result) return '#000000';
+            return "#" + (1 << 24 | result[1] << 16 | result[2] << 8 | result[3]).toString(16).slice(1);
+        }
+
+        function addTextBox() {
+            const canvas = document.getElementById('editor-canvas');
+            const newEl = document.createElement('div');
+            newEl.innerText = "New Text";
+            newEl.style.position = 'absolute';
+            newEl.style.left = '50%';
+            newEl.style.top = '50%';
+            newEl.style.transform = 'translate(-50%, -50%)';
+            newEl.style.fontSize = '24px';
+            newEl.style.color = '#000000';
+            newEl.style.fontFamily = "'Inter', sans-serif";
+            newEl.style.padding = '8px';
+            newEl.style.minWidth = '100px';
+            newEl.style.textAlign = 'center';
+            
+            canvas.appendChild(newEl);
+            attachListeners();
+            saveState();
+            
+            // Auto select it
+            selectElement(newEl);
+        }
+
+        // --- SAVE / CANCEL ---
+        function cancelAndReturn() {
+            localStorage.removeItem('editing_visual_id');
+            localStorage.removeItem('editing_visual_html');
+            const returnUrl = localStorage.getItem('editing_return_url') || 'visual_lab.html';
+            localStorage.removeItem('editing_return_url');
+            window.location.href = returnUrl;
+        }
+
+        function saveAndReturn() {
+            deselectElement(); // clean up styles
+            
+            // Clean up outlines from clones
+            const elements = document.getElementById('editor-canvas').querySelectorAll('*');
+            elements.forEach(el => {
+                el.style.outline = '';
+                el.removeAttribute('contenteditable');
+            });
+            
+            const editedHtml = document.getElementById('editor-canvas').innerHTML;
+            const id = localStorage.getItem('editing_visual_id');
+            
+            // Get existing edits dict from storage or create new
+            let savedEdits = {};
+            const existing = localStorage.getItem('visual_edits');
+            if (existing) {
+                try { savedEdits = JSON.parse(existing); } catch(e){}
+            }
+            
+            // Save the specific component edit
+            savedEdits[id] = editedHtml;
+            localStorage.setItem('visual_edits', JSON.stringify(savedEdits));
+            
+            // Clean up transport vars
+            localStorage.removeItem('editing_visual_id');
+            localStorage.removeItem('editing_visual_html');
+            
+            const returnUrl = localStorage.getItem('editing_return_url') || 'visual_lab.html';
+            localStorage.removeItem('editing_return_url');
+            window.location.href = returnUrl;
+        }
+    </script>
+</body>
+</html>

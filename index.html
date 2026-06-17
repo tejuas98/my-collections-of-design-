@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>My Collections - AI 2027</title>
+    <link rel="stylesheet" href="ai_theme.css"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tailwind_config.js"></script>
+    <style>
+        .perspective-1000 { perspective: 1000px; }
+        .preserve-3d { transform-style: preserve-3d; }
+        .visual-wrapper { color: #111827; }
+    </style>
+</head>
+<body class="antialiased mb-16">
+<div class="main-grid">
+    <!-- Navbar -->
+    <nav class="flex flex-col [grid-area:header] z-10">
+        <div class="flex flex-row items-center justify-between mr-[1.5px] mt-0 sm:mt-8">
+            <nav class="z-10 flex flex-wrap sm:gap-12 text-xl font-system-serif pl-2 sm:py-2 mb-0 items-center justify-between sm:justify-center w-full">
+                <a class="no-underline sm:mr-auto" href="https://tejuas98.github.io/CyberSecurity/">
+                    <h1 class="mb-0 font-bold text-3xl whitespace-nowrap text-black hover:text-gray-700 transition">AI 2027</h1>
+                </a>
+                <div class="relative group">
+                    <a class="nav-tab-main whitespace-nowrap no-underline text-black hover:underline transition cursor-pointer" href="#research-papers" style="text-decoration: underline;">My Collections</a>
+                    
+                    <div class="absolute left-0 sm:left-auto sm:-translate-x-1/2 top-[100%] mt-2 w-[280px] hidden group-hover:block shadow-lg pb-2 pt-2 rounded bg-[var(--background)] border border-black z-50">
+                        <a href="#research-papers" class="flex flex-col px-4 py-3 text-black hover:bg-gray-100 transition no-underline border-b border-gray-200">
+                            <div class="flex items-center gap-3">
+                                <span class="font-bold text-sm whitespace-nowrap">Research Papers</span>
+                                <span class="bg-blue-100 text-blue-800 text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0">OTHERS</span>
+                            </div>
+                        </a>
+                        <a href="#my-designs" class="flex flex-col px-4 py-3 text-black hover:bg-gray-100 transition no-underline border-b border-gray-200">
+                            <div class="flex items-center gap-3">
+                                <span class="font-bold text-sm whitespace-nowrap">My Designs</span>
+                                <span class="bg-indigo-100 text-indigo-800 text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0">SAVED</span>
+                            </div>
+                        </a>
+                        <a href="visual_lab.html" class="flex flex-col px-4 py-3 text-black hover:bg-gray-100 transition no-underline border-b border-gray-200">
+                            <div class="flex items-center gap-3">
+                                <span class="font-bold text-sm whitespace-nowrap">Visual Research Lab</span>
+                                <span class="bg-purple-100 text-purple-800 text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0">DESIGN VAULT</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="relative group">
+                    <a class="whitespace-nowrap no-underline text-black hover:underline transition cursor-pointer" href="https://tejuas98.github.io/CyberSecurity/#my-research">My research</a>
+                    
+                    <div class="absolute left-0 sm:left-auto sm:-translate-x-1/2 top-[100%] mt-2 w-[280px] hidden group-hover:block shadow-lg pb-2 pt-2 rounded bg-[var(--background)] border border-black z-50">
+                        <a href="paper_micro_tool.html" class="flex flex-col px-4 py-3 text-black hover:bg-gray-100 transition no-underline border-b border-gray-200">
+                            <div class="flex items-center gap-3">
+                                <span class="font-bold text-sm whitespace-nowrap">Micro-Tool AI Workflows</span>
+                                <span class="bg-blue-100 text-blue-800 text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0">RESEARCH GUIDE</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <a class="whitespace-nowrap px-4 py-[2px] border border-black no-underline text-black hover:bg-gray-50 transition relative z-50" href="https://tejuas98.github.io/CyberSecurity/#about">About</a>
+                <a class="whitespace-nowrap px-4 py-[2px] border border-black no-underline text-black hover:bg-gray-50 transition ml-4 relative z-50" href="https://tejuas98.github.io/CyberSecurity/#career-roles">Career Roles</a>
+            </nav>
+        </div>
+    </nav>
+
+    <!-- Content -->
+    <main class="max-w-none [grid-area:content] mt-12 px-4 sm:px-0">
+        
+        <!-- RESEARCH PAPERS TAB -->
+        <div id="research-papers" class="tab-content hidden pt-8 mb-24 pb-16">
+            <h2 class="text-4xl font-serif mb-6 mt-0 font-normal">My Collections of Research Papers by Others</h2>
+            <p class="leading-relaxed mb-12 text-[17px] text-gray-700">
+                [ Insert your curated timeline and summaries of other research papers here... ]
+            </p>
+        </div>
+
+        <!-- MY DESIGNS TAB -->
+        <div id="my-designs" class="tab-content hidden pt-8 mb-24 pb-16">
+            <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-8">
+                <div>
+                    <h2 class="text-4xl font-serif mt-0 mb-2 font-normal">My Designs</h2>
+                    <p class="text-sm text-gray-500 font-mono">YOUR CUSTOMIZED RESEARCH VISUALS & LAYOUTS</p>
+                </div>
+                
+                <!-- Sub tabs toggle -->
+                <div class="flex bg-gray-100 p-1 border border-gray-200 rounded-lg max-w-xs self-start sm:self-auto font-mono text-xs">
+                    <button onclick="switchDesignSubTab('saved')" id="subtab-saved-btn" class="px-4 py-2 rounded-md font-bold transition-all text-black bg-white shadow-sm">
+                        SAVED DESIGNS
+                    </button>
+                    <button onclick="switchDesignSubTab('library')" id="subtab-library-btn" class="px-4 py-2 rounded-md font-bold transition-all text-gray-500 hover:text-black">
+                        TEMPLATE LIBRARY
+                    </button>
+                </div>
+            </div>
+
+            <!-- Empty State (Saved Designs) -->
+            <div id="designs-empty-state" class="hidden text-center py-20 bg-white border border-gray-200 p-8 rounded-lg shadow-sm">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-indigo-50 text-indigo-600 mb-6">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">No customized designs yet</h3>
+                <p class="text-gray-500 text-sm max-w-md mx-auto mb-8 leading-relaxed">
+                    You haven't customized any templates from the Visual Research Lab. Browse our template library to select a template, tweak its design, and save it.
+                </p>
+                <button onclick="switchDesignSubTab('library')" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 transition">
+                    Browse Template Library
+                </button>
+            </div>
+
+            <!-- Saved Designs Grid -->
+            <div id="designs-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Dynamically populated -->
+            </div>
+
+            <!-- Templates Library Grid -->
+            <div id="templates-grid-container" class="hidden">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8" id="templates-grid">
+                    <!-- Dynamically loaded from visual_lab.html -->
+                </div>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<script>
+const catalog = {
+    "visual_1": {"title": "Research Layout Component", "cat": "Research Visuals"},
+    "visual_2": {"title": "Browser Window Container", "cat": "Product Interfaces"},
+    "visual_3": {"title": "Browser Window Container", "cat": "Product Interfaces"},
+    "visual_4": {"title": "Research Layout Component", "cat": "Research Visuals"},
+    "visual_5": {"title": "CLI / Terminal Mockup", "cat": "My Experiments"},
+    "visual_6": {"title": "AI Prompt Interface", "cat": "UI Inspiration"},
+    "visual_7": {"title": "AI Prompt Interface", "cat": "UI Inspiration"},
+    "visual_8": {"title": "AI Prompt Interface", "cat": "UI Inspiration"},
+    "visual_9": {"title": "CLI / Terminal Mockup", "cat": "My Experiments"},
+    "visual_10": {"title": "Browser Window Container", "cat": "Product Interfaces"},
+    "visual_11": {"title": "CLI / Terminal Mockup", "cat": "My Experiments"},
+    "visual_12": {"title": "Browser Window Container", "cat": "Product Interfaces"},
+    "visual_13": {"title": "Research Layout Component", "cat": "Research Visuals"},
+    "visual_14": {"title": "AI Prompt Interface", "cat": "UI Inspiration"},
+    "visual_15": {"title": "AI Prompt Interface", "cat": "UI Inspiration"},
+    "visual_16": {"title": "CLI / Terminal Mockup", "cat": "My Experiments"},
+    "visual_17": {"title": "CLI / Terminal Mockup", "cat": "My Experiments"},
+    "visual_18": {"title": "AI Prompt Interface", "cat": "UI Inspiration"},
+    "visual_19": {"title": "AI Prompt Interface", "cat": "UI Inspiration"},
+    "visual_20": {"title": "CLI / Terminal Mockup", "cat": "My Experiments"},
+    "visual_21": {"title": "Flowchart Element", "cat": "Diagrams"},
+    "visual_22": {"title": "CLI / Terminal Mockup", "cat": "My Experiments"},
+    "visual_23": {"title": "Flowchart Element", "cat": "Diagrams"},
+    "visual_24": {"title": "AI Prompt Interface", "cat": "UI Inspiration"},
+    "visual_25": {"title": "AI Prompt Interface", "cat": "UI Inspiration"}
+};
+
+let currentSubTab = 'saved';
+let templatesLoaded = false;
+let parsedTemplatesDoc = null;
+
+function showTab(hash) {
+    let tabId = hash.replace('#', '');
+    if (tabId !== 'research-papers' && tabId !== 'my-designs') {
+        tabId = 'research-papers';
+    }
+
+    // Toggle tab contents
+    document.querySelectorAll('.tab-content').forEach(el => {
+        el.classList.add('hidden');
+    });
+    const targetTab = document.getElementById(tabId);
+    if (targetTab) {
+        targetTab.classList.remove('hidden');
+    }
+
+    if (tabId === 'my-designs') {
+        switchDesignSubTab(currentSubTab);
+    }
+}
+
+function switchDesignSubTab(subTab) {
+    currentSubTab = subTab;
+    const savedBtn = document.getElementById('subtab-saved-btn');
+    const libraryBtn = document.getElementById('subtab-library-btn');
+    const savedGrid = document.getElementById('designs-grid');
+    const libraryGrid = document.getElementById('templates-grid-container');
+    const emptyState = document.getElementById('designs-empty-state');
+
+    if (subTab === 'saved') {
+        savedBtn.className = 'px-4 py-2 rounded-md font-bold transition-all text-black bg-white shadow-sm';
+        libraryBtn.className = 'px-4 py-2 rounded-md font-bold transition-all text-gray-500 hover:text-black';
+        libraryGrid.classList.add('hidden');
+        renderSavedDesigns();
+    } else {
+        libraryBtn.className = 'px-4 py-2 rounded-md font-bold transition-all text-black bg-white shadow-sm';
+        savedBtn.className = 'px-4 py-2 rounded-md font-bold transition-all text-gray-500 hover:text-black';
+        savedGrid.classList.add('hidden');
+        emptyState.classList.add('hidden');
+        libraryGrid.classList.remove('hidden');
+        loadTemplateLibrary();
+    }
+}
+
+function renderSavedDesigns() {
+    const grid = document.getElementById('designs-grid');
+    const emptyState = document.getElementById('designs-empty-state');
+    grid.innerHTML = '';
+
+    const savedData = localStorage.getItem('visual_edits');
+    let edits = {};
+    if (savedData) {
+        try { edits = JSON.parse(savedData); } catch (e) { console.error(e); }
+    }
+
+    const keys = Object.keys(edits).filter(k => edits[k]);
+
+    if (keys.length === 0) {
+        grid.classList.add('hidden');
+        emptyState.classList.remove('hidden');
+        return;
+    }
+
+    grid.classList.remove('hidden');
+    emptyState.classList.add('hidden');
+
+    keys.forEach(id => {
+        const title = catalog[id] ? catalog[id].title : 'Custom Component';
+        const category = catalog[id] ? catalog[id].cat : 'My Experiments';
+        const savedHtml = edits[id];
+
+        const card = document.createElement('div');
+        card.className = 'bg-white border border-gray-200 rounded-xl shadow-sm p-6 flex flex-col justify-between';
+        card.innerHTML = `
+            <div class="mb-4">
+                <h3 class="font-serif font-bold text-2xl text-gray-900 mb-1 leading-tight">${title}</h3>
+                <div class="font-mono text-[10px] font-bold tracking-widest text-gray-500 uppercase">${category}</div>
+            </div>
+            
+            <div class="perspective-1000 w-full mb-4 border border-gray-100 rounded-lg overflow-hidden h-[180px] flex justify-center items-center bg-gray-50/50 relative">
+                <div class="visual-wrapper preserve-3d scale-[0.4] origin-center pointer-events-none" style="width: 250%;">
+                    ${savedHtml}
+                </div>
+            </div>
+            
+            <div class="flex justify-end items-center gap-3 pt-3 border-t border-gray-100">
+                <button onclick="copySavedCode('${id}', event)" id="copy-btn-${id}" class="bg-transparent border border-gray-200 hover:bg-gray-50 rounded-full p-2.5 transition-all flex items-center justify-center shrink-0" title="Copy HTML Code" style="width: 36px; height: 36px;">
+                    <svg fill="none" height="16" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                </button>
+                <button onclick="editSavedDesign('${id}', event)" class="bg-transparent border border-gray-200 hover:bg-gray-50 rounded-full p-2.5 transition-colors flex items-center justify-center text-indigo-600 shrink-0" title="Edit in Studio" style="width: 36px; height: 36px;">
+                    <svg fill="none" height="16" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                </button>
+                <button onclick="deleteSavedDesign('${id}', event)" class="bg-transparent border border-gray-200 hover:bg-red-50 hover:border-red-200 rounded-full p-2.5 transition-colors flex items-center justify-center text-red-500 shrink-0" title="Delete Design" style="width: 36px; height: 36px;">
+                    <svg fill="none" height="16" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                </button>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+async function loadTemplateLibrary() {
+    if (templatesLoaded) return;
+    const grid = document.getElementById('templates-grid');
+    grid.innerHTML = '<div class="col-span-full text-center py-12 text-gray-500 font-mono">Loading templates from Visual Research Lab...</div>';
+
+    try {
+        const res = await fetch('visual_lab.html');
+        const text = await res.text();
+        parsedTemplatesDoc = new DOMParser().parseFromString(text, 'text/html');
+
+        grid.innerHTML = '';
+
+        const cards = parsedTemplatesDoc.querySelectorAll('#card-grid .product-card');
+        cards.forEach(cardEl => {
+            const title = cardEl.querySelector('h3').innerText;
+            const cat = cardEl.querySelector('h3').nextElementSibling.innerText;
+
+            // Extract the visual ID
+            const copyBtn = cardEl.querySelector('[id^="copy-btn-"]');
+            const downloadBtn = cardEl.querySelector('.download-btn');
+            let id = '';
+            if (copyBtn) {
+                id = copyBtn.id.replace('copy-btn-', '');
+            } else if (downloadBtn) {
+                // fallback
+                const onclickStr = downloadBtn.getAttribute('onclick');
+                const match = onclickStr.match(/'(visual_\d+)'/);
+                if (match) id = match[1];
+            }
+            if (!id) return;
+
+            const visualWrapper = cardEl.querySelector('.visual-wrapper');
+            if (!visualWrapper) return;
+
+            const templateCard = document.createElement('div');
+            templateCard.className = 'bg-white border border-gray-200 rounded-xl shadow-sm p-6 flex flex-col justify-between';
+            templateCard.innerHTML = `
+                <div class="mb-4">
+                    <h3 class="font-serif font-bold text-2xl text-gray-900 mb-1 leading-tight">${title}</h3>
+                    <div class="font-mono text-[10px] font-bold tracking-widest text-gray-500 uppercase">${cat}</div>
+                </div>
+                
+                <div class="perspective-1000 w-full mb-4 border border-gray-100 rounded-lg overflow-hidden h-[180px] flex justify-center items-center bg-gray-50/50 relative">
+                    <div class="visual-wrapper preserve-3d scale-[0.4] origin-center pointer-events-none" style="width: 250%;">
+                        ${visualWrapper.innerHTML}
+                    </div>
+                </div>
+                
+                <div class="flex justify-end items-center gap-3 pt-3 border-t border-gray-100">
+                    <button onclick="customizeTemplate('${id}', event)" class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-xs font-mono font-bold tracking-wider transition flex items-center justify-center gap-2">
+                        <svg fill="none" height="14" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" width="14"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                        CUSTOMIZE IN STUDIO
+                    </button>
+                </div>
+            `;
+            grid.appendChild(templateCard);
+        });
+
+        templatesLoaded = true;
+    } catch (e) {
+        console.error(e);
+        grid.innerHTML = '<div class="col-span-full text-center py-12 text-red-500 font-mono">Failed to load templates. Please make sure the site is served via an HTTP server.</div>';
+    }
+}
+
+function customizeTemplate(id, event) {
+    if (event) event.stopPropagation();
+    if (!parsedTemplatesDoc) return;
+    
+    const visualWrapper = parsedTemplatesDoc.querySelector(`#visual-front-${id} .visual-wrapper`);
+    if (visualWrapper) {
+        localStorage.setItem('editing_visual_id', id);
+        localStorage.setItem('editing_visual_html', visualWrapper.innerHTML);
+        localStorage.setItem('editing_return_url', 'index.html#my-designs');
+        window.location.href = 'customization_studio.html';
+    } else {
+        alert("Failed to extract template code.");
+    }
+}
+
+function copySavedCode(id, event) {
+    if (event) event.stopPropagation();
+    const savedData = localStorage.getItem('visual_edits');
+    if (savedData) {
+        try {
+            const edits = JSON.parse(savedData);
+            if (edits[id]) {
+                navigator.clipboard.writeText(edits[id]).then(() => {
+                    const btn = document.getElementById('copy-btn-' + id);
+                    if (btn) {
+                        const originalHtml = btn.innerHTML;
+                        btn.style.width = '90px';
+                        btn.innerHTML = `<span class="text-[10px] font-mono font-bold text-green-500 tracking-widest whitespace-nowrap">COPIED!</span>`;
+                        btn.classList.add('border-green-500', 'bg-green-500/10');
+                        
+                        setTimeout(() => { 
+                            btn.style.width = '36px';
+                            btn.innerHTML = originalHtml; 
+                            btn.classList.remove('border-green-500', 'bg-green-500/10');
+                        }, 2000);
+                    }
+                });
+            }
+        } catch (e) { console.error(e); }
+    }
+}
+
+function editSavedDesign(id, event) {
+    if (event) event.stopPropagation();
+    const savedData = localStorage.getItem('visual_edits');
+    if (savedData) {
+        try {
+            const edits = JSON.parse(savedData);
+            if (edits[id]) {
+                localStorage.setItem('editing_visual_id', id);
+                localStorage.setItem('editing_visual_html', edits[id]);
+                localStorage.setItem('editing_return_url', 'index.html#my-designs');
+                window.location.href = 'customization_studio.html';
+            }
+        } catch (e) { console.error(e); }
+    }
+}
+
+function deleteSavedDesign(id, event) {
+    if (event) event.stopPropagation();
+    if (confirm("Are you sure you want to delete this customized design?")) {
+        const savedData = localStorage.getItem('visual_edits');
+        if (savedData) {
+            try {
+                const edits = JSON.parse(savedData);
+                delete edits[id];
+                localStorage.setItem('visual_edits', JSON.stringify(edits));
+                renderSavedDesigns();
+            } catch (e) { console.error(e); }
+        }
+    }
+}
+
+window.addEventListener('hashchange', () => {
+    showTab(window.location.hash);
+    window.scrollTo(0, 0);
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+    showTab(window.location.hash || '#research-papers');
+});
+</script>
+</body>
+</html>
