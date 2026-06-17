@@ -38,7 +38,7 @@
                                 <span class="bg-indigo-100 text-indigo-800 text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0">SAVED</span>
                             </div>
                         </a>
-                        <a href="visual_lab.html" class="flex flex-col px-4 py-3 text-black hover:bg-gray-100 transition no-underline border-b border-gray-200">
+                        <a href="visual_lab.html" id="nav-visual-lab-link" class="flex flex-col px-4 py-3 text-black hover:bg-gray-100 transition no-underline border-b border-gray-200">
                             <div class="flex items-center gap-3">
                                 <span class="font-bold text-sm whitespace-nowrap">Visual Research Lab</span>
                                 <span class="bg-purple-100 text-purple-800 text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0">DESIGN VAULT</span>
@@ -126,6 +126,15 @@
 </div>
 
 <script>
+const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:';
+const visualLabUrl = isLocal ? '../project%20manager/visual_lab.html' : 'https://tejuas98.github.io/CyberSecurity/visual_lab.html';
+const customizationStudioUrl = isLocal ? '../project%20manager/customization_studio.html' : 'https://tejuas98.github.io/CyberSecurity/customization_studio.html';
+
+document.addEventListener('DOMContentLoaded', () => {
+    const navLabLink = document.getElementById('nav-visual-lab-link');
+    if (navLabLink) navLabLink.href = visualLabUrl;
+});
+
 const catalog = {
     "visual_1": {"title": "Research Layout Component", "cat": "Research Visuals"},
     "visual_2": {"title": "Browser Window Container", "cat": "Product Interfaces"},
@@ -264,7 +273,7 @@ async function loadTemplateLibrary() {
     grid.innerHTML = '<div class="col-span-full text-center py-12 text-gray-500 font-mono">Loading templates from Visual Research Lab...</div>';
 
     try {
-        const res = await fetch('visual_lab.html');
+        const res = await fetch(visualLabUrl);
         const text = await res.text();
         parsedTemplatesDoc = new DOMParser().parseFromString(text, 'text/html');
 
@@ -332,7 +341,7 @@ function customizeTemplate(id, event) {
         localStorage.setItem('editing_visual_id', id);
         localStorage.setItem('editing_visual_html', visualWrapper.innerHTML);
         localStorage.setItem('editing_return_url', 'index.html#my-designs');
-        window.location.href = 'customization_studio.html';
+        window.location.href = customizationStudioUrl;
     } else {
         alert("Failed to extract template code.");
     }
@@ -375,7 +384,7 @@ function editSavedDesign(id, event) {
                 localStorage.setItem('editing_visual_id', id);
                 localStorage.setItem('editing_visual_html', edits[id]);
                 localStorage.setItem('editing_return_url', 'index.html#my-designs');
-                window.location.href = 'customization_studio.html';
+                window.location.href = customizationStudioUrl;
             }
         } catch (e) { console.error(e); }
     }
