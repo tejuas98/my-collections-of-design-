@@ -210,7 +210,7 @@ body::-webkit-scrollbar {
 
 </div>
 <!-- GRID -->
-<div class="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6" id="card-grid">
+<div class="columns-1 md:columns-2 xl:columns-3 2xl:columns-4 gap-8" id="card-grid">
 
 </div>
 </main>
@@ -224,32 +224,7 @@ body::-webkit-scrollbar {
         
         // --- RENDER CARDS DYNAMICALLY ---
         
-        function updateCardZooms() {
-            const cards = document.querySelectorAll('.product-card');
-            cards.forEach(card => {
-                const wrapper = card.querySelector('.visual-wrapper');
-                const container = card.querySelector('[id^="visual-front-"]');
-                if (!wrapper || !container) return;
-                
-                const containerWidth = container.clientWidth;
-                if (containerWidth > 0) {
-                    const scale = containerWidth / 600;
-                    
-                    // Remove zoom and use standard transform for perfect cross-browser support
-                    wrapper.style.zoom = '';
-                    wrapper.style.transform = `scale(${scale})`;
-                    wrapper.style.transformOrigin = 'top left';
-                    
-                    // The layout height does not automatically shrink with transform: scale
-                    // So we must explicitly set the container height to the scaled height!
-                    // We measure scrollHeight to ensure we capture the full unscaled height.
-                    const scaledHeight = wrapper.scrollHeight * scale;
-                    container.style.height = `${scaledHeight}px`;
-                }
-            });
-        }
         
-        window.addEventListener('resize', updateCardZooms);
 
         function renderCards() {
             const grid = document.getElementById('card-grid');
@@ -274,7 +249,7 @@ body::-webkit-scrollbar {
             
             <!-- Minimal Visual Design -->
             <div class="w-full bg-transparent rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-[var(--arsenal-border)] hover:border-[var(--border-primary)] relative" id="visual-front-${design.id}">
-                <div class="visual-wrapper flex justify-center items-start pointer-events-none p-4" style="width: 600px; transform-origin: top left;">
+                <div class="visual-wrapper flex justify-center items-start pointer-events-none p-4 w-full">
                     ${design.visual_html}
                 </div>
             </div>
@@ -283,7 +258,7 @@ body::-webkit-scrollbar {
             });
             
             // Apply dynamic zoom after rendering
-            setTimeout(updateCardZooms, 50);
+            
         }
 
 
