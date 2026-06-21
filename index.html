@@ -233,8 +233,18 @@ body::-webkit-scrollbar {
                 
                 const containerWidth = container.clientWidth;
                 if (containerWidth > 0) {
-                    const zoomLevel = containerWidth / 600;
-                    wrapper.style.zoom = zoomLevel;
+                    const scale = containerWidth / 600;
+                    
+                    // Remove zoom and use standard transform for perfect cross-browser support
+                    wrapper.style.zoom = '';
+                    wrapper.style.transform = `scale(${scale})`;
+                    wrapper.style.transformOrigin = 'top left';
+                    
+                    // The layout height does not automatically shrink with transform: scale
+                    // So we must explicitly set the container height to the scaled height!
+                    // We measure scrollHeight to ensure we capture the full unscaled height.
+                    const scaledHeight = wrapper.scrollHeight * scale;
+                    container.style.height = `${scaledHeight}px`;
                 }
             });
         }
@@ -360,7 +370,7 @@ body::-webkit-scrollbar {
                     const whiteTexts = clonedContent.querySelectorAll('.text-white');
                     whiteTexts.forEach(el => { el.classList.remove('text-white'); el.classList.add('text-[var(--text-primary)]'); });
                     
-                    const whiteBorders = clonedContent.querySelectorAll('.border-white\/20');
+                    const whiteBorders = clonedContent.querySelectorAll('.border-white\\/20');
                     whiteBorders.forEach(el => { el.classList.remove('border-white/20'); el.classList.add('border-[var(--border-primary)]'); });
                     
                     metadataContainer.innerHTML = '';
