@@ -146,7 +146,26 @@ body::-webkit-scrollbar {
     display: none; /* Chrome, Safari and Opera */
 }
 
-</style>
+
+        .visual-wrapper {
+            width: 600px;
+            transform-origin: top center;
+            zoom: 0.75;
+            transition: zoom 0.3s ease;
+        }
+        @media (max-width: 1536px) { .visual-wrapper { zoom: 0.65; } }
+        @media (max-width: 1280px) { .visual-wrapper { zoom: 0.55; } }
+        @media (max-width: 1024px) { .visual-wrapper { zoom: 0.6; } }
+        @media (max-width: 768px) { .visual-wrapper { zoom: 0.5; } }
+        @media (max-width: 640px) { .visual-wrapper { zoom: 0.6; } }
+
+        /* Modal forces 100% full scale */
+        #preview-modal-content .visual-wrapper {
+            zoom: 1 !important;
+            margin: auto;
+        }
+
+    </style>
 
 <style>
     /* Terminals */
@@ -169,7 +188,26 @@ body::-webkit-scrollbar {
     .term-dot { width: 8px; height: 8px; border-radius: 50%; }
     .term-title { color: #94A3B8; font-family: var(--font-main); font-size: 10px; margin-left: 8px; font-weight: 600;}
     .term-body { padding: 12px; color: #E2E8F0; line-height: 1.5; }
-</style>
+
+        .visual-wrapper {
+            width: 600px;
+            transform-origin: top center;
+            zoom: 0.75;
+            transition: zoom 0.3s ease;
+        }
+        @media (max-width: 1536px) { .visual-wrapper { zoom: 0.65; } }
+        @media (max-width: 1280px) { .visual-wrapper { zoom: 0.55; } }
+        @media (max-width: 1024px) { .visual-wrapper { zoom: 0.6; } }
+        @media (max-width: 768px) { .visual-wrapper { zoom: 0.5; } }
+        @media (max-width: 640px) { .visual-wrapper { zoom: 0.6; } }
+
+        /* Modal forces 100% full scale */
+        #preview-modal-content .visual-wrapper {
+            zoom: 1 !important;
+            margin: auto;
+        }
+
+    </style>
 </head>
 <body class="font-sans antialiased min-h-screen pb-24 light-theme">
 <!-- NAV -->
@@ -203,7 +241,7 @@ body::-webkit-scrollbar {
 
 </div>
 <!-- GRID -->
-<div class="columns-[640px] gap-8" id="card-grid">
+<div class="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6" id="card-grid">
 
 </div>
 </main>
@@ -242,7 +280,7 @@ body::-webkit-scrollbar {
             
             <!-- Minimal Visual Design -->
             <div class="w-full bg-transparent rounded-xl overflow-x-auto overflow-y-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-[var(--arsenal-border)] hover:border-[var(--border-primary)] relative hide-scroll" id="visual-front-${design.id}">
-                <div class="visual-wrapper flex justify-center items-start pointer-events-none p-4" style="width: 600px; transform-origin: top center;">
+                <div class="visual-wrapper flex justify-center items-start pointer-events-none p-4">
                     ${design.visual_html}
                 </div>
             </div>
@@ -250,7 +288,7 @@ body::-webkit-scrollbar {
                 grid.insertAdjacentHTML('beforeend', cardHTML);
             });
             
-            // Apply dynamic zoom after rendering
+            
             
         }
 
@@ -324,7 +362,7 @@ body::-webkit-scrollbar {
             const visualHtml = document.querySelector('#visual-front-' + id + ' .visual-wrapper').innerHTML;
             
             // Wrap the HTML in the same 600px container used in the grid to guarantee identical, perfect rendering
-            contentContainer.innerHTML = `<div class="visual-wrapper flex justify-center items-center pointer-events-auto p-4" style="width: 600px; transform-origin: center center; margin: auto;">${visualHtml}</div>`;
+            contentContainer.innerHTML = `<div class="visual-wrapper flex justify-center items-center pointer-events-auto p-4">${visualHtml}</div>`;
             document.getElementById('modal-title').innerText = title;
             document.getElementById('modal-category').innerText = category;
             
