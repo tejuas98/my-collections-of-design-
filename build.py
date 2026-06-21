@@ -90,7 +90,7 @@ def build():
         cards_html.append(card_html)
 
     # Join cards into the grid
-    grid_content = f'<div class="grid grid-cols-1 lg:grid-cols-2 gap-10" id="card-grid">\n' + '\n'.join(cards_html) + '\n</div>'
+    grid_content = '\n'.join(cards_html)
     
     # Replace markers
     output_html = template.replace('<!-- INJECT_CARDS_HERE -->', grid_content)
