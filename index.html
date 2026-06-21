@@ -147,23 +147,7 @@ body::-webkit-scrollbar {
 }
 
 
-        .visual-wrapper {
-            width: 600px;
-            transform-origin: top center;
-            zoom: 0.75;
-            transition: zoom 0.3s ease;
-        }
-        @media (max-width: 1536px) { .visual-wrapper { zoom: 0.65; } }
-        @media (max-width: 1280px) { .visual-wrapper { zoom: 0.55; } }
-        @media (max-width: 1024px) { .visual-wrapper { zoom: 0.6; } }
-        @media (max-width: 768px) { .visual-wrapper { zoom: 0.5; } }
-        @media (max-width: 640px) { .visual-wrapper { zoom: 0.6; } }
-
-        /* Modal forces 100% full scale */
-        #preview-modal-content .visual-wrapper {
-            zoom: 1 !important;
-            margin: auto;
-        }
+        
 
     </style>
 
@@ -189,23 +173,7 @@ body::-webkit-scrollbar {
     .term-title { color: #94A3B8; font-family: var(--font-main); font-size: 10px; margin-left: 8px; font-weight: 600;}
     .term-body { padding: 12px; color: #E2E8F0; line-height: 1.5; }
 
-        .visual-wrapper {
-            width: 600px;
-            transform-origin: top center;
-            zoom: 0.75;
-            transition: zoom 0.3s ease;
-        }
-        @media (max-width: 1536px) { .visual-wrapper { zoom: 0.65; } }
-        @media (max-width: 1280px) { .visual-wrapper { zoom: 0.55; } }
-        @media (max-width: 1024px) { .visual-wrapper { zoom: 0.6; } }
-        @media (max-width: 768px) { .visual-wrapper { zoom: 0.5; } }
-        @media (max-width: 640px) { .visual-wrapper { zoom: 0.6; } }
-
-        /* Modal forces 100% full scale */
-        #preview-modal-content .visual-wrapper {
-            zoom: 1 !important;
-            margin: auto;
-        }
+        
 
     </style>
 </head>
@@ -279,8 +247,8 @@ body::-webkit-scrollbar {
             </div>
             
             <!-- Minimal Visual Design -->
-            <div class="w-full bg-transparent rounded-xl overflow-x-auto overflow-y-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-[var(--arsenal-border)] hover:border-[var(--border-primary)] relative hide-scroll" id="visual-front-${design.id}">
-                <div class="visual-wrapper flex justify-center items-start pointer-events-none p-4">
+            <div class="w-full bg-transparent rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-[var(--arsenal-border)] hover:border-[var(--border-primary)] relative" id="visual-front-${design.id}">
+                <div class="visual-wrapper flex justify-center items-start pointer-events-none p-4" style="width: 640px;">
                     ${design.visual_html}
                 </div>
             </div>
@@ -350,6 +318,38 @@ body::-webkit-scrollbar {
 
         
 
+        
+        // Robust JavaScript scaling to perfectly fit designs into columns without clipping
+        function updateCardZooms() {
+            const cards = document.querySelectorAll('.product-card');
+            cards.forEach(card => {
+                const wrapper = card.querySelector('.visual-wrapper');
+                const container = card.querySelector('[id^="visual-front-"]');
+                if (!wrapper || !container) return;
+                
+                // Ensure wrapper is visible to measure
+                wrapper.style.display = 'flex';
+                
+                const containerWidth = container.clientWidth;
+                if (containerWidth > 0) {
+                    // Use 640px layout canvas. This matches the original designs while allowing a little breathing room so nothing chops on the right.
+                    const BASE_WIDTH = 640;
+                    let scale = containerWidth / BASE_WIDTH;
+                    if (scale > 1) scale = 1; // Don't scale up beyond 100%
+                    
+                    wrapper.style.transform = `scale(${scale})`;
+                    wrapper.style.transformOrigin = 'top left';
+                    
+                    // Crucial: transform doesn't affect document flow. We MUST set container height manually so the bottom isn't chopped.
+                    const scaledHeight = wrapper.scrollHeight * scale;
+                    container.style.height = `${scaledHeight}px`;
+                }
+            });
+        }
+        
+        window.addEventListener('resize', updateCardZooms);
+
+
         function openPreviewModal(id) {
             document.body.style.overflow = 'hidden';
             const card = document.querySelector(`.product-card [id^="copy-btn-${id}"]`).closest('.product-card');
@@ -362,7 +362,7 @@ body::-webkit-scrollbar {
             const visualHtml = document.querySelector('#visual-front-' + id + ' .visual-wrapper').innerHTML;
             
             // Wrap the HTML in the same 600px container used in the grid to guarantee identical, perfect rendering
-            contentContainer.innerHTML = `<div class="visual-wrapper flex justify-center items-center pointer-events-auto p-4">${visualHtml}</div>`;
+            contentContainer.innerHTML = `<div class="visual-wrapper flex justify-center items-start pointer-events-auto p-4 mx-auto" style="width: 640px;">${visualHtml}</div>`;
             document.getElementById('modal-title').innerText = title;
             document.getElementById('modal-category').innerText = category;
             
