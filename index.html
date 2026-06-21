@@ -353,7 +353,8 @@ body::-webkit-scrollbar {
             const contentContainer = document.getElementById('preview-modal-content');
             const visualHtml = document.querySelector('#visual-front-' + id + ' .visual-wrapper').innerHTML;
             
-            contentContainer.innerHTML = visualHtml;
+            // Wrap the HTML in the same 600px container used in the grid to guarantee identical, perfect rendering
+            contentContainer.innerHTML = `<div class="visual-wrapper flex justify-center items-center pointer-events-auto p-4" style="width: 600px; transform-origin: center center;">${visualHtml}</div>`;
             document.getElementById('modal-title').innerText = title;
             document.getElementById('modal-category').innerText = category;
             
@@ -396,13 +397,9 @@ body::-webkit-scrollbar {
                 
                 const visualEl = contentContainer.firstElementChild;
                 if(visualEl) {
-                    // Make sure visual wrapper doesn't restrict to 100% width, so we get true size
-                    visualEl.classList.remove('w-full');
-                    visualEl.style.width = 'max-content';
-                    
-                    const availW = leftPane.clientWidth - 32; // account for padding
+                    const availW = leftPane.clientWidth - 32; // padding buffer
                     const availH = leftPane.clientHeight - 32;
-                    const elW = visualEl.scrollWidth;
+                    const elW = 600; // Force layout to the 600px canvas we created
                     const elH = visualEl.scrollHeight;
                     
                     if (elW > 0 && elH > 0) {
