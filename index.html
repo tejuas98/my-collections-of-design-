@@ -210,7 +210,7 @@ body::-webkit-scrollbar {
 
 </div>
 <!-- GRID -->
-<div class="columns-1 lg:columns-2 gap-8" id="card-grid">
+<div class="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6" id="card-grid">
 
 </div>
 </main>
@@ -235,50 +235,20 @@ body::-webkit-scrollbar {
                 window.catalog[design.id] = design; // populate catalog
                 
                 const cardHTML = `
-        <div class="product-card break-inside-avoid mb-8 p-6 flex flex-col justify-between research-card relative cursor-pointer hover:border-[var(--text-primary)] transition-all" data-category="${design.category}" onclick="openPreviewModal('${design.id}')">
-            <div>
-                <div class="mb-4">
-                    <h3 class="font-serif font-bold text-2xl text-[var(--arsenal-title)] mb-1">${design.title}</h3>
-                    <div class="font-mono text-[11px] font-bold tracking-widest text-[var(--arsenal-text)] uppercase">${design.category}</div>
-                </div>
-                
-                <!-- 3D FLIP CONTAINER -->
-                <div class="group perspective-1000 w-full mb-2 cursor-pointer" onclick="flipCard('${design.id}')" title="Click to flip or edit">
-                    <div class="relative w-full transition-transform duration-700 preserve-3d grid" id="flip-inner-${design.id}">
-                        
-                        <!-- FRONT FACE: The Visual -->
-                        <div class="col-start-1 row-start-1 backface-hidden w-full flex justify-center items-center bg-transparent p-6 rounded-lg bg-[var(--bg-primary)] border border-[var(--arsenal-border)] hover:border-[var(--arsenal-title)] transition-colors relative overflow-hidden" id="visual-front-${design.id}">
-                            <!-- Hint Icon -->
-                            <div class="absolute top-2 right-2 bg-black/10 text-[var(--arsenal-title)] rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-50">
-                                <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.59-9.21l-3.23 3.23"></path></svg>
-                            </div>
-                            <!-- Normal Card Visual -->
-                            <div class="visual-wrapper w-full flex justify-center items-center pointer-events-none">
-                                ${design.visual_html}
-                            </div>
-                        </div>
-                        
-                        <!-- BACK FACE: The Metadata -->
-                        <div class="col-start-1 row-start-1 backface-hidden rotate-y-180 w-full flex flex-col justify-center items-start p-6 rounded-lg bg-[var(--bg-primary)] border border-[var(--arsenal-border)] overflow-y-auto z-20">
-                            <div class="w-full">
-                                ${design.metadata_html}
-                            </div>
-                        </div>
-                        
-                    </div>
-                </div>
+        <div class="product-card break-inside-avoid mb-6 relative cursor-pointer group" data-category="${design.category}" onclick="openPreviewModal('${design.id}')">
+            <!-- Hidden elements for modal logic -->
+            <div class="hidden">
+                <h3>${design.title}</h3>
+                <div>${design.category}</div>
+                <button id="copy-btn-${design.id}"></button>
+                <div class="backface-hidden rotate-y-180">${design.metadata_html}</div>
             </div>
             
-            <!-- Utility Bar -->
-            <div class="flex justify-end items-center gap-3 mt-6 pt-4 border-t border-[var(--arsenal-border)] relative z-20 bg-[var(--arsenal-card-bg)] utility-bar" onclick="event.stopPropagation()">
-                <button class="bg-transparent border border-[var(--arsenal-border)] text-[var(--text-primary)] hover:bg-[var(--border-primary)] rounded-full p-2.5 transition-all duration-300 z-10 relative flex items-center justify-center overflow-hidden" id="copy-btn-${design.id}" onclick="copyCode('${design.id}', event)" title="Copy HTML Code" style="min-width: 36px; height: 36px;">
-                    <div class="flex items-center justify-center transition-all duration-300" id="copy-icon-container-${design.id}">
-                        <svg fill="none" height="16" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                    </div>
-                </button>
-                <button class="download-btn bg-transparent border border-[var(--arsenal-border)] text-[var(--text-primary)] hover:bg-[var(--border-primary)] rounded-full p-2.5 transition-colors z-10 relative" onclick="downloadPNG('${design.id}')" title="Download PNG">
-                    <svg fill="none" height="16" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="16"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>
-                </button>
+            <!-- Minimal Visual Design -->
+            <div class="w-full bg-transparent rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-[var(--arsenal-border)] hover:border-[var(--border-primary)] relative" id="visual-front-${design.id}">
+                <div class="visual-wrapper w-full flex justify-center items-start pointer-events-none p-4" style="zoom: 0.65; transform-origin: top center;">
+                    ${design.visual_html}
+                </div>
             </div>
         </div>`;
                 grid.insertAdjacentHTML('beforeend', cardHTML);
