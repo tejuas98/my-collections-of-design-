@@ -210,7 +210,7 @@ body::-webkit-scrollbar {
 
 </div>
 <!-- GRID -->
-<div class="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6" id="card-grid">
+<div class="columns-[640px] gap-8" id="card-grid">
 
 </div>
 </main>
@@ -248,8 +248,8 @@ body::-webkit-scrollbar {
             </div>
             
             <!-- Minimal Visual Design -->
-            <div class="w-full bg-transparent rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-[var(--arsenal-border)] hover:border-[var(--border-primary)] relative" id="visual-front-${design.id}">
-                <div class="visual-wrapper flex justify-center items-start pointer-events-none p-4" style="width: 600px; transform-origin: top left;">
+            <div class="w-full bg-transparent rounded-xl overflow-x-auto overflow-y-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-[var(--arsenal-border)] hover:border-[var(--border-primary)] relative hide-scroll" id="visual-front-${design.id}">
+                <div class="visual-wrapper flex justify-center items-start pointer-events-none p-4" style="width: 600px; transform-origin: top center;">
                     ${design.visual_html}
                 </div>
             </div>
@@ -317,27 +317,7 @@ body::-webkit-scrollbar {
             setTimeout(() => { modal.style.display = 'none'; }, 300);
         }
 
-        function updateCardZooms() {
-            const cards = document.querySelectorAll('.product-card');
-            cards.forEach(card => {
-                const wrapper = card.querySelector('.visual-wrapper');
-                const container = card.querySelector('[id^="visual-front-"]');
-                if (!wrapper || !container) return;
-                
-                const containerWidth = container.clientWidth;
-                if (containerWidth > 0) {
-                    const scale = containerWidth / 600;
-                    
-                    wrapper.style.transform = `scale(${scale})`;
-                    wrapper.style.transformOrigin = 'top left';
-                    
-                    const scaledHeight = wrapper.scrollHeight * scale;
-                    container.style.height = `${scaledHeight}px`;
-                }
-            });
-        }
         
-        window.addEventListener('resize', updateCardZooms);
 
         function openPreviewModal(id) {
             document.body.style.overflow = 'hidden';
