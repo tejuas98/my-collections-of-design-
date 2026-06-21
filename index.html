@@ -217,17 +217,10 @@ body::-webkit-scrollbar {
 <input class="w-full bg-[var(--bg-primary)] border border-[var(--border-primary)] text-[var(--text-primary)] px-4 py-2 pl-10 rounded-full text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all" id="search-input" onkeyup="searchCards()" placeholder="Search visuals, text..." type="text"/>
 <svg class="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
 </div>
-<div class="flex items-center gap-1 bg-[var(--arsenal-card-bg)] border border-[var(--border-primary)] rounded-lg p-1 ml-4 flex-shrink-0">
-<button class="view-toggle-btn active" id="btn-grid-view" onclick="setViewMode('grid')" title="Grid View">
-<svg fill="none" height="18" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" width="18"><rect height="7" width="7" x="3" y="3"></rect><rect height="7" width="7" x="14" y="3"></rect><rect height="7" width="7" x="14" y="14"></rect><rect height="7" width="7" x="3" y="14"></rect></svg>
-</button>
-<button class="view-toggle-btn" id="btn-list-view" onclick="setViewMode('list')" title="List View">
-<svg fill="none" height="18" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24" width="18"><line x1="8" x2="21" y1="6" y2="6"></line><line x1="8" x2="21" y1="12" y2="12"></line><line x1="8" x2="21" y1="18" y2="18"></line><line x1="3" x2="3.01" y1="6" y2="6"></line><line x1="3" x2="3.01" y1="12" y2="12"></line><line x1="3" x2="3.01" y1="18" y2="18"></line></svg>
-</button>
-</div>
+
 </div>
 <!-- GRID -->
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-10" id="card-grid">
+<div class="columns-1 lg:columns-2 gap-8" id="card-grid">
 
 </div>
 </main>
@@ -252,7 +245,7 @@ body::-webkit-scrollbar {
                 window.catalog[design.id] = design; // populate catalog
                 
                 const cardHTML = `
-        <div class="product-card p-6 flex flex-col justify-between research-card relative cursor-pointer hover:border-[var(--text-primary)] transition-all" data-category="${design.category}" onclick="openPreviewModal('${design.id}')">
+        <div class="product-card break-inside-avoid mb-8 p-6 flex flex-col justify-between research-card relative cursor-pointer hover:border-[var(--text-primary)] transition-all" data-category="${design.category}" onclick="openPreviewModal('${design.id}')">
             <div>
                 <div class="mb-4">
                     <h3 class="font-serif font-bold text-2xl text-[var(--arsenal-title)] mb-1">${design.title}</h3>
@@ -505,7 +498,7 @@ body::-webkit-scrollbar {
             const cards = document.querySelectorAll('.product-card');
             cards.forEach(card => {
                 if (category === 'All' || card.getAttribute('data-category') === category) {
-                    card.style.display = currentView === 'list' ? 'flex' : 'flex'; // It flexes in both layouts
+                    card.style.display = 'flex'; // It flexes in both layouts
                 } else {
                     card.style.display = 'none';
                 }
@@ -533,7 +526,7 @@ body::-webkit-scrollbar {
                 const cat = card.getAttribute('data-category').toLowerCase();
                 
                 if (title.includes(query) || cat.includes(query)) {
-                    card.style.display = currentView === 'list' ? 'flex' : 'flex';
+                    card.style.display = 'flex';
                 } else {
                     card.style.display = 'none';
                 }
