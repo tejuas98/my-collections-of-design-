@@ -265,8 +265,11 @@ body::-webkit-scrollbar {
                         
                         <!-- FRONT FACE: The Visual -->
                         <div class="col-start-1 row-start-1 backface-hidden w-full flex justify-center items-center bg-transparent p-6 rounded-lg bg-[var(--bg-primary)] border border-[var(--arsenal-border)] hover:border-[var(--arsenal-title)] transition-colors relative overflow-hidden" id="visual-front-${design.id}">
-                            <div class="absolute inset-0 bg-gradient-to-br from-[var(--bg-primary)] to-[var(--arsenal-card-bg)] opacity-50 z-0"></div>
-                            
+                            <!-- Hint Icon -->
+                            <div class="absolute top-2 right-2 bg-black/10 text-[var(--arsenal-title)] rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-50">
+                                <svg fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.59-9.21l-3.23 3.23"></path></svg>
+                            </div>
+                            <!-- Normal Card Visual -->
                             <div class="visual-wrapper w-full flex justify-center items-center pointer-events-none">
                                 ${design.visual_html}
                             </div>
