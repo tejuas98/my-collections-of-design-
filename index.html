@@ -223,6 +223,24 @@ body::-webkit-scrollbar {
         // --- LOAD SAVED EDITS ON BOOT ---
         
         // --- RENDER CARDS DYNAMICALLY ---
+        
+        function updateCardZooms() {
+            const cards = document.querySelectorAll('.product-card');
+            cards.forEach(card => {
+                const wrapper = card.querySelector('.visual-wrapper');
+                const container = card.querySelector('[id^="visual-front-"]');
+                if (!wrapper || !container) return;
+                
+                const containerWidth = container.clientWidth;
+                if (containerWidth > 0) {
+                    const zoomLevel = containerWidth / 600;
+                    wrapper.style.zoom = zoomLevel;
+                }
+            });
+        }
+        
+        window.addEventListener('resize', updateCardZooms);
+
         function renderCards() {
             const grid = document.getElementById('card-grid');
             if(!grid) return;
@@ -246,13 +264,16 @@ body::-webkit-scrollbar {
             
             <!-- Minimal Visual Design -->
             <div class="w-full bg-transparent rounded-xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-[var(--arsenal-border)] hover:border-[var(--border-primary)] relative" id="visual-front-${design.id}">
-                <div class="visual-wrapper w-full flex justify-center items-start pointer-events-none p-4" style="zoom: 0.65; transform-origin: top center;">
+                <div class="visual-wrapper flex justify-center items-start pointer-events-none p-4" style="width: 600px; transform-origin: top left;">
                     ${design.visual_html}
                 </div>
             </div>
         </div>`;
                 grid.insertAdjacentHTML('beforeend', cardHTML);
             });
+            
+            // Apply dynamic zoom after rendering
+            setTimeout(updateCardZooms, 50);
         }
 
 
@@ -338,6 +359,9 @@ body::-webkit-scrollbar {
                     // Ensure text colors are visible in the modal by switching from hard-coded white to theme variable
                     const whiteTexts = clonedContent.querySelectorAll('.text-white');
                     whiteTexts.forEach(el => { el.classList.remove('text-white'); el.classList.add('text-[var(--text-primary)]'); });
+                    
+                    const whiteBorders = clonedContent.querySelectorAll('.border-white\/20');
+                    whiteBorders.forEach(el => { el.classList.remove('border-white/20'); el.classList.add('border-[var(--border-primary)]'); });
                     
                     metadataContainer.innerHTML = '';
                     metadataContainer.appendChild(clonedContent);
