@@ -321,26 +321,20 @@ body::-webkit-scrollbar {
         
         // Robust JavaScript scaling to perfectly fit designs into columns without clipping
         function updateCardZooms() {
+            const grid = document.getElementById('card-grid');
+            if (!grid) return;
+            
+            // Calculate true column width mathematically to avoid DOM layout stretching bugs
+            let cols = 1;
+            if (window.matchMedia('(min-width: 1280px)').matches) cols = 4;
+            else if (window.matchMedia('(min-width: 1024px)').matches) cols = 3;
+            else if (window.matchMedia('(min-width: 640px)').matches) cols = 2;
+            
+            const gridWidth = grid.clientWidth;
+            const gap = 24; // gap-6 is 24px
+            const containerWidth = (gridWidth - (cols - 1) * gap) / cols;
+            
             const cards = document.querySelectorAll('.product-card');
-            const trueWidths = new Map();
-            
-            // Phase 1: Temporarily hide all 640px wrappers. 
-            // Why? Because in CSS multi-column layouts, a fixed-width child will stretch its parent beyond the column width.
-            // By hiding them, the containers naturally collapse to the EXACT strict width of the masonry column.
-            cards.forEach(card => {
-                const wrapper = card.querySelector('.visual-wrapper');
-                if (wrapper) wrapper.style.display = 'none';
-            });
-            
-            // Phase 2: Measure the true, un-stretched column widths.
-            cards.forEach(card => {
-                const container = card.querySelector('[id^="visual-front-"]');
-                if (container) {
-                    trueWidths.set(container, container.clientWidth);
-                }
-            });
-            
-            // Phase 3: Restore wrappers, measure their actual scrollWidth, and apply perfect scaling.
             cards.forEach(card => {
                 const wrapper = card.querySelector('.visual-wrapper');
                 const container = card.querySelector('[id^="visual-front-"]');
@@ -349,7 +343,6 @@ body::-webkit-scrollbar {
                 wrapper.style.display = 'flex';
                 wrapper.style.transform = 'none'; // reset transform to accurately measure scrollWidth
                 
-                const containerWidth = trueWidths.get(container);
                 if (containerWidth > 0) {
                     const BASE_WIDTH = Math.max(640, wrapper.scrollWidth);
                     let scale = containerWidth / BASE_WIDTH;
@@ -358,7 +351,9 @@ body::-webkit-scrollbar {
                     wrapper.style.transform = `scale(${scale})`;
                     wrapper.style.transformOrigin = 'top left';
                     
-                    // Crucial: transform doesn't affect document flow. We MUST set container height manually so the bottom isn't chopped.
+                    // Crucial: set BOTH container width and height manually so the 640px wrapper footprint
+                    // doesn't artificially stretch the masonry column and cause cards to overlap!
+                    container.style.width = `${containerWidth}px`;
                     const scaledHeight = wrapper.scrollHeight * scale;
                     container.style.height = `${scaledHeight}px`;
                 }
