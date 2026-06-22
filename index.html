@@ -322,22 +322,38 @@ body::-webkit-scrollbar {
         // Robust JavaScript scaling to perfectly fit designs into columns without clipping
         function updateCardZooms() {
             const cards = document.querySelectorAll('.product-card');
+            const trueWidths = new Map();
+            
+            // Phase 1: Temporarily hide all 640px wrappers. 
+            // Why? Because in CSS multi-column layouts, a fixed-width child will stretch its parent beyond the column width.
+            // By hiding them, the containers naturally collapse to the EXACT strict width of the masonry column.
+            cards.forEach(card => {
+                const wrapper = card.querySelector('.visual-wrapper');
+                if (wrapper) wrapper.style.display = 'none';
+            });
+            
+            // Phase 2: Measure the true, un-stretched column widths.
+            cards.forEach(card => {
+                const container = card.querySelector('[id^="visual-front-"]');
+                if (container) {
+                    trueWidths.set(container, container.clientWidth);
+                }
+            });
+            
+            // Phase 3: Restore wrappers, measure their actual scrollWidth, and apply perfect scaling.
             cards.forEach(card => {
                 const wrapper = card.querySelector('.visual-wrapper');
                 const container = card.querySelector('[id^="visual-front-"]');
                 if (!wrapper || !container) return;
                 
-                // Ensure wrapper is visible to measure
                 wrapper.style.display = 'flex';
+                wrapper.style.transform = 'none'; // reset transform to accurately measure scrollWidth
                 
-                const containerWidth = container.clientWidth;
+                const containerWidth = trueWidths.get(container);
                 if (containerWidth > 0) {
-                    // Use 640px layout canvas. This matches the original designs while allowing a little breathing room so nothing chops on the right.
-                    // Check actual scrollWidth to ensure we scale down enough to prevent ANY cropping
-                    // Even if a design explicitly overflows the 640px wrapper, this guarantees it fits
                     const BASE_WIDTH = Math.max(640, wrapper.scrollWidth);
                     let scale = containerWidth / BASE_WIDTH;
-                    if (scale > 1) scale = 1; // Don't scale up beyond 100%
+                    if (scale > 1) scale = 1; 
                     
                     wrapper.style.transform = `scale(${scale})`;
                     wrapper.style.transformOrigin = 'top left';
