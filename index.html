@@ -275,6 +275,9 @@ body::-webkit-scrollbar {
                     });
                 } catch(e) { console.error("Could not parse saved visual edits"); }
             }
+            
+            // Execute the initial zoom calculation so cards aren't broken on load
+            setTimeout(updateCardZooms, 10);
         });
 
         
